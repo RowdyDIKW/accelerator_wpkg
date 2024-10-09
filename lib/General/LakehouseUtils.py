@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import SparkSession
-
+from delta.tables import DeltaTable
 
 class LakehouseUtils:
     def __init__(self, lakehouse_name: str, spark: SparkSession):
@@ -34,3 +34,24 @@ class LakehouseUtils:
         for table in self.get_table_names():
             tables[table] = self.get_table(table)
         return tables
+
+    def save_tables(self,tables: dict, key_columns: list):
+        for key, df in tables.items():
+            key_columns = [col for col in key_columns if col in df.columns]
+            key_column = key_columns[0]
+            self.save_table(key,df,key_column)
+
+
+    def save_table(self, table_name: str,df: DataFrame, key_column: str):
+        if self.spark.catalog.tableExists(f"{self.lakehouse_name}.{table_name}"):
+            self.merge_table(table_name,df, key_column)
+        else:
+            self.write_table(table_name,df)
+
+    def merge_table(self,table_name: str,df: DataFrame, key_column: str):
+        delta_table = DeltaTable.forName(self.spark, table_name)
+        delta_table.alias("existing").merge(source=df.alias("updates"),condition=f"existing.{key_column} = updates.{key_column}")\
+            .whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
+
+    def write_table(self, table_name: str,df: DataFrame):
+        df.write.format("delta").saveAsTable(f"{self.lakehouse_name}.{table_name}")
