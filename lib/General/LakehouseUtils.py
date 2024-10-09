@@ -37,8 +37,8 @@ class LakehouseUtils:
 
     def save_tables(self,tables: dict, key_columns: list):
         for key, df in tables.items():
-            key_columns = [col for col in key_columns if col in df.columns]
-            key_column = key_columns[0]
+            key_column = [col for col in key_columns if col in df.columns]
+            key_column = key_column[0]
             self.save_table(key,df,key_column)
 
 

@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as F
-from lib.General.LakehouseUtils import LakehouseUtils
-from lib.General.DqUtils import DqUtils
+from General.LakehouseUtils import LakehouseUtils
+from General.DqUtils import DqUtils
 
 class Orchestrator:
     def __init__(self,spark: SparkSession, bronze_lh_name: str, silver_lh_name):
