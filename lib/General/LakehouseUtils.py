@@ -37,20 +37,22 @@ class LakehouseUtils:
 
     def save_tables(self,tables: dict, key_columns: list):
         for key, df in tables.items():
-            key_column = [col for col in key_columns if col in df.columns]
-            key_column = key_column[0]
-            self.save_table(key,df,key_column)
+            key_columns_present = [col for col in key_columns if col in df.columns]
+            if not key_columns_present:
+                raise ValueError(f"No key columns found in {key}.")
+            self.save_table(key,df,key_columns_present)
 
 
-    def save_table(self, table_name: str,df: DataFrame, key_column: str):
+    def save_table(self, table_name: str,df: DataFrame, key_columns: list):
         if self.spark.catalog.tableExists(f"{self.lakehouse_name}.{table_name}"):
-            self.merge_table(table_name,df, key_column)
+            self.merge_table(table_name,df, key_columns)
         else:
             self.write_table(table_name,df)
 
-    def merge_table(self,table_name: str,df: DataFrame, key_column: str):
+    def merge_table(self,table_name: str,df: DataFrame, key_columns: list):
         delta_table = DeltaTable.forName(self.spark, table_name)
-        delta_table.alias("existing").merge(source=df.alias("updates"),condition=f"existing.{key_column} = updates.{key_column}")\
+        merge_condition = " AND ".join([f"existing.{col} = updates.{col}" for col in key_columns])
+        delta_table.alias("existing").merge(source=df.alias("updates"),condition=merge_condition)\
             .whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
 
     def write_table(self, table_name: str,df: DataFrame):
