@@ -11,8 +11,8 @@ class Orchestrator:
 
     def execute(self):
 
-        bronze_lh_obj = LakehouseUtils(self.bronze_lh_name)
-        silver_lh_obj = LakehouseUtils(self.silver_lh_name)
+        bronze_lh_obj = LakehouseUtils(self.bronze_lh_name, self.spark)
+        silver_lh_obj = LakehouseUtils(self.silver_lh_name, self.spark)
         dq_obj = DqUtils()
 
         # 1. Get bronze tables
@@ -26,4 +26,3 @@ class Orchestrator:
         # 3. write tables to silver lakehouse
         print("store tables in silver layer lakehouse")
         silver_lh_obj.save_tables(silver_tables,dq_obj.configs['key_columns'])
-
