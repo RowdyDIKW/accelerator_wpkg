@@ -1,6 +1,8 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import SparkSession
 from delta.tables import DeltaTable
+from tqdm.notebook import tqdm
+from icecream import ic
 
 class LakehouseUtils:
     def __init__(self, lakehouse_name: str, spark: SparkSession):
@@ -29,18 +31,30 @@ class LakehouseUtils:
         df = self.spark.table(f"{self.lakehouse_name}.{table_name}")
         return df
 
-    def get_all_tables(self) -> dict:
+    def get_all_tables(self, debug=False) -> dict:
+        if not debug:
+            ic.disable()
+        ic()
         tables = {}
         for table in self.get_table_names():
+            ic(table)
             tables[table] = self.get_table(table)
         return tables
 
-    def save_tables(self,tables: dict, key_columns: list):
-        for key, df in tables.items():
-            key_columns_present = [col for col in key_columns if col in df.columns]
-            if not key_columns_present:
-                raise ValueError(f"No key columns found in {key}.")
-            self.save_table(key,df,key_columns_present)
+    def save_tables(self,tables: dict, prefix: str,key_columns = False, debug=False):
+        if not debug:
+            ic.disable()
+        ic()
+        if key_columns:
+            for key, df in tqdm(tables.items(), desc='Saving tables', unit='Table'):
+                ic(key)
+                key_columns_present = [col for col in key_columns if col in df.columns]
+                self.save_table(prefix+"_"+key,df,key_columns_present)
+        else:
+            for key, df in tqdm(tables.items(), desc='Saving tables', unit='Table'):
+                ic(key)
+                self.write_table(prefix+"_"+key,df)
+
 
 
     def save_table(self, table_name: str,df: DataFrame, key_columns: list):
@@ -56,4 +70,5 @@ class LakehouseUtils:
             .whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
 
     def write_table(self, table_name: str,df: DataFrame):
-        df.write.format("delta").saveAsTable(f"{self.lakehouse_name}.{table_name}")
+        df.write.format("delta").mode('overwrite').saveAsTable(f"{self.lakehouse_name}.{table_name}")
+

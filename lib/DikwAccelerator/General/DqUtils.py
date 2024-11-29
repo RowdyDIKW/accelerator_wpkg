@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as F
+from tqdm.notebook import tqdm
 
 class DqUtils:
     def __init__(self):
@@ -11,7 +12,7 @@ class DqUtils:
 
     def deduplicate_tables(self, tables: dict) -> dict:
         clean_tables = {}
-        for key, df in tables.items():
+        for key, df in tqdm(tables.items()):
             key_columns = [col for col in self.configs['key_columns'] if col in df.columns]
             df = df.dropDuplicates()
             if key_columns:
