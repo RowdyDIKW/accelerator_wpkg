@@ -70,5 +70,5 @@ class LakehouseUtils:
             .whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
 
     def write_table(self, table_name: str,df: DataFrame):
-        df.write.format("delta").mode('overwrite').saveAsTable(f"{self.lakehouse_name}.{table_name}")
+        df.write.format("delta").mode('overwrite').option("overwriteSchema", "true").saveAsTable(f"{self.lakehouse_name}.{table_name}")
 

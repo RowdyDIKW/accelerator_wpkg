@@ -14,9 +14,31 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,spark: SparkSession, debug=False) -> d
     if not debug:
         ic.disable()
     ic()
+    print_with_current_datetime("Transforming pandas dataframes to spark dataframes")
     for key, df in tqdm(dict_of_dfs.items()):
         ic(key)
         if isinstance(df, pd.DataFrame):
             df = df.astype(str)
             dict_of_dfs[key] = spark.createDataFrame(df)
     return dict_of_dfs
+
+
+def rename_unnamed_columns(dataframes: dict, debug=False) -> dict:
+    if not debug:
+        ic.disable()
+    ic()
+    print_with_current_datetime("renaming unnamed collumns")
+    updated_dataframes = {}
+
+    for sheet_name, df in tqdm(dataframes.items()):
+        updated_df = df.copy()
+
+        unnamed_cols = [col for col in updated_df.columns if "Unnamed" in str(col)]
+
+        for i, col in enumerate(unnamed_cols, start=1):
+            new_col_name = f"memo_{i}"
+            updated_df.rename(columns={col: new_col_name}, inplace=True)
+
+        updated_dataframes[sheet_name] = updated_df
+
+    return updated_dataframes
