@@ -6,5 +6,7 @@ setup(
     packages=find_packages(where='lib'),
     package_dir={'': 'lib'},
     install_requires=[
+        "icecream",
+        "loguru"
     ],
 )
