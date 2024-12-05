@@ -45,6 +45,8 @@ class LakehouseUtils:
         if not debug:
             ic.disable()
         ic()
+        if schema:
+            self.spark.sql(f"CREATE SCHEMA IF NOT EXISTS {self.lakehouse_name}.{schema}")
         if key_columns:
             for key, df in tqdm(tables.items(), desc='Saving tables', unit='Table'):
                 ic(key)
