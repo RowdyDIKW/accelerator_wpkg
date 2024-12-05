@@ -41,7 +41,7 @@ class LakehouseUtils:
             tables[table] = self.get_table(table)
         return tables
 
-    def save_tables(self,tables: dict, prefix: str,key_columns = False, debug=False):
+    def save_tables(self,tables: dict, schema = False,key_columns = False, debug=False):
         if not debug:
             ic.disable()
         ic()
@@ -49,11 +49,11 @@ class LakehouseUtils:
             for key, df in tqdm(tables.items(), desc='Saving tables', unit='Table'):
                 ic(key)
                 key_columns_present = [col for col in key_columns if col in df.columns]
-                self.save_table(prefix+"_"+key,df,key_columns_present)
+                self.save_table((f"{schema}." if schema else "")+key,df,key_columns_present)
         else:
             for key, df in tqdm(tables.items(), desc='Saving tables', unit='Table'):
                 ic(key)
-                self.write_table(prefix+"_"+key,df)
+                self.write_table((f"{schema}." if schema else "")+key,df)
 
 
 

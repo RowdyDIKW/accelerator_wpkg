@@ -6,7 +6,7 @@ from DikwAccelerator.General.GeneralUtils import print_with_current_datetime
 from icecream import ic
 
 @dataclass
-class Dataset:
+class Schema:
     """Class for creating a dataset"""
     name: str # name of dataset (this is also used as prefix for all the tables
     dest: str
