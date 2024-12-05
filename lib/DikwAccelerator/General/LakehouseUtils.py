@@ -8,7 +8,7 @@ class LakehouseUtils:
     def __init__(self, lakehouse_name: str, spark: SparkSession):
         self.lakehouse_name = lakehouse_name
         self.spark = spark
-        self.tables = spark.catalog.listTables(self.lakehouse_name)
+        # self.tables = spark.catalog.listTables(self.lakehouse_name)
         self.lh_metadata = {
             'table_names': [table.name for table in self.tables]
         }
@@ -18,28 +18,28 @@ class LakehouseUtils:
             schema_dict = {col.name: col.dataType for col in columns}
             self.lh_metadata['schemas'][name] = schema_dict
 
-    def get_meta_data(self, key: str) -> dict:
-        return self.lh_metadata.get(key, "Key not found")
-
-    def get_table_names(self) -> list:
-        return self.get_meta_data('table_names')
-
-    def get_table_schema(self, table_name: str) -> dict:
-        return self.get_meta_data('schemas')[table_name]
-
-    def get_table(self, table_name: str) -> DataFrame:
-        df = self.spark.table(f"{self.lakehouse_name}.{table_name}")
-        return df
-
-    def get_all_tables(self, debug=False) -> dict:
-        if not debug:
-            ic.disable()
-        ic()
-        tables = {}
-        for table in self.get_table_names():
-            ic(table)
-            tables[table] = self.get_table(table)
-        return tables
+    # def get_meta_data(self, key: str) -> dict:
+    #     return self.lh_metadata.get(key, "Key not found")
+    #
+    # def get_table_names(self) -> list:
+    #     return self.get_meta_data('table_names')
+    #
+    # def get_table_schema(self, table_name: str) -> dict:
+    #     return self.get_meta_data('schemas')[table_name]
+    #
+    # def get_table(self, table_name: str) -> DataFrame:
+    #     df = self.spark.table(f"{self.lakehouse_name}.{table_name}")
+    #     return df
+    #
+    # def get_all_tables(self, debug=False) -> dict:
+    #     if not debug:
+    #         ic.disable()
+    #     ic()
+    #     tables = {}
+    #     for table in self.get_table_names():
+    #         ic(table)
+    #         tables[table] = self.get_table(table)
+    #     return tables
 
     def save_tables(self,tables: dict, schema = False,key_columns = False, debug=False):
         if not debug:
