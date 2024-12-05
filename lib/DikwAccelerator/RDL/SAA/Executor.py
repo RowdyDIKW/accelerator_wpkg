@@ -8,7 +8,6 @@ import os
 class Executor:
     instance_id : int
     log_path: str
-    debug: bool
     spark: SparkSession
 
     def __post_init__(self):

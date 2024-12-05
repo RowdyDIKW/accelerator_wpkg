@@ -18,12 +18,13 @@ class Schema:
     def __post_init__(self):
         self.lh_obj = LakehouseUtils(self.dest,self.spark)
 
-    def save(self, debug=False) -> None:
-        if not debug:
-            ic.disable()
-        ic()
-        logger.info(f'saving dataset schema: {self.name}')
-        if self.key_columns is None:
-            self.lh_obj.save_tables(self.dataset,schema=self.name, debug=debug)
-        else:
-            self.lh_obj.save_tables(self.dataset, self.name, key_columns=self.key_columns, debug=debug)
+    def save(self) -> None:
+        try:
+            logger.info(f'saving dataset schema: {self.name}')
+            if self.key_columns is None:
+                self.lh_obj.save_tables(self.dataset,schema=self.name)
+            else:
+                self.lh_obj.save_tables(self.dataset, self.name, key_columns=self.key_columns)
+        except Exception as e:
+            logger.error(f"saving dataset schema: {self.name} failed: {e}")
+            raise
