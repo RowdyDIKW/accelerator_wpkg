@@ -9,14 +9,14 @@ class LakehouseUtils:
         self.lakehouse_name = lakehouse_name
         self.spark = spark
         # self.tables = spark.catalog.listTables(self.lakehouse_name)
-        self.lh_metadata = {
-            'table_names': [table.name for table in self.tables]
-        }
-        self.lh_metadata['schemas'] = {}
-        for name in self.lh_metadata['table_names']:
-            columns = spark.catalog.listColumns(f'{self.lakehouse_name}.{name}')
-            schema_dict = {col.name: col.dataType for col in columns}
-            self.lh_metadata['schemas'][name] = schema_dict
+        # self.lh_metadata = {
+        #     'table_names': [table.name for table in self.tables]
+        # }
+        # self.lh_metadata['schemas'] = {}
+        # for name in self.lh_metadata['table_names']:
+        #     columns = spark.catalog.listColumns(f'{self.lakehouse_name}.{name}')
+        #     schema_dict = {col.name: col.dataType for col in columns}
+        #     self.lh_metadata['schemas'][name] = schema_dict
 
     # def get_meta_data(self, key: str) -> dict:
     #     return self.lh_metadata.get(key, "Key not found")
