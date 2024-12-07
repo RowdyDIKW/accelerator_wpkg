@@ -3,6 +3,10 @@ from tqdm.notebook import tqdm
 from pyspark.sql import SparkSession
 import pandas as pd
 from loguru import logger
+from pyspark.sql.types import (
+    IntegerType, DoubleType, BooleanType, StringType, DateType, TimestampType
+)
+from pyspark.sql.functions import col, to_date, to_timestamp
 
 def print_with_current_datetime(message):
     current_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -51,3 +55,55 @@ def rename_unnamed_columns(dataframes: dict, dataset_name: str) -> dict:
     except Exception as e:
         logger.error(f"renaming unnamed columns of dataset: {dataset_name} failed: {e}")
         raise
+
+def detect_and_cast_column(df, column):
+    """
+    Detecteert en cast een enkele kolom naar het meest geschikte datatype.
+    """
+    # Probeer BooleanType
+    try:
+        if df.filter((col(column) != "true") & (col(column) != "false") & (col(column).isNotNull())).count() == 0:
+            return df.withColumn(column, col(column).cast(BooleanType()))
+    except:
+        pass
+
+    # Probeer IntegerType
+    try:
+        if df.filter(col(column).isNotNull() & ~col(column).cast(StringType()).rlike("^[0-9]+$")).count() == 0:
+            return df.withColumn(column, col(column).cast(IntegerType()))
+    except:
+        pass
+
+    # Probeer DoubleType
+    try:
+        if df.filter(col(column).isNotNull() & ~col(column).cast(StringType()).rlike("^[0-9]+(\\.[0-9]+)?$")).count() == 0:
+            return df.withColumn(column, col(column).cast(DoubleType()))
+    except:
+        pass
+
+    # Probeer DateType
+    try:
+        test_df = df.withColumn(column, to_date(col(column), "yyyy-MM-dd"))
+        if test_df.filter(col(column).isNotNull() & col(column).isNull()).count() == 0:
+            return test_df
+    except:
+        pass
+
+    # Probeer TimestampType
+    try:
+        test_df = df.withColumn(column, to_timestamp(col(column), "yyyy-MM-dd HH:mm:ss"))
+        if test_df.filter(col(column).isNotNull() & col(column).isNull()).count() == 0:
+            return test_df
+    except:
+        pass
+
+    # Als niets werkt, houd StringType
+    return df
+
+def auto_cast_dataframe(df):
+    """
+    Detecteert en cast alle kolommen in een DataFrame naar het meest geschikte datatype.
+    """
+    for column in df.columns:
+        df = detect_and_cast_column(df, column)
+    return df

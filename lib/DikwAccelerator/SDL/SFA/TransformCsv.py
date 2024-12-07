@@ -8,10 +8,10 @@ import datetime
 import os
 
 @dataclass
-class TransformXlsx:
+class TransformCsv:
     file_path : str
     log_path : str
-    dataset_name : str
+    schema_name : str
     dest_lh : str
     spark : SparkSession
 
@@ -30,11 +30,11 @@ class TransformXlsx:
             """         add code below          """
             # Create dict with df's from excel file
             excel_data = pd.read_excel(self.file_path, sheet_name=None)
-            excel_data = rename_unnamed_columns(excel_data,self.dataset_name)
-            excel_data = pandas_to_spark_dfs(excel_data,self.dataset_name, self.spark)
+            excel_data = rename_unnamed_columns(excel_data,self.schema_name)
+            excel_data = pandas_to_spark_dfs(excel_data,self.schema_name, self.spark)
 
             # Save as delta tables
-            dataset = Schema(name=self.dataset_name, dest=self.dest_lh, dataset=excel_data, spark=self.spark)
+            dataset = Schema(name=self.schema_name, dest=self.dest_lh, dataset=excel_data, spark=self.spark)
             dataset.save()
 
 
