@@ -1,6 +1,8 @@
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as F
 from tqdm.notebook import tqdm
+import numpy as np
+import pandas as pd
 
 class DqUtils:
     def __init__(self):
@@ -24,3 +26,11 @@ class DqUtils:
         duplicates_df = df.groupBy(key_columns).agg(F.count("*").alias("count")).filter(F.col("count") > 1)
         if duplicates_df.count() > 0:
             raise ValueError("Duplicates found for one or more of the key columns")
+
+
+def pandas_clean_old_dates(df):
+    for column in df.columns:
+        if pd.api.types.is_datetime64_any_dtype(df[column]):
+            df[column] = df[column].apply(lambda x: np.nan if x.year < 1900 else x)
+
+    return df

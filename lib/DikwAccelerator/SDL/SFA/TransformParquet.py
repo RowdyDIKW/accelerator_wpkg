@@ -8,7 +8,7 @@ import datetime
 import os
 
 @dataclass
-class TransformCsv:
+class TransformParquetFiles:
     file_path : str
     log_path : str
     schema_name : str
@@ -16,7 +16,7 @@ class TransformCsv:
     spark : SparkSession
 
     def __post_init__(self):
-        self.local_log_directory = "/tmp/TransformXlsx_log"
+        self.local_log_directory = "/tmp/TransformParquetFiles_log"
         self.time = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
     def execute(self) -> str:
@@ -26,7 +26,7 @@ class TransformCsv:
             logger.add(local_log_file, rotation="10 MB", retention="7 days", level="DEBUG",
                        format="{time} | {level} | {name} {function} | {message}")
 
-            logger.info(f"Transform XLSX file {self.file_path} process started")
+            logger.info(f"Transform Parquet files in {self.file_path} process started")
             """         add code below          """
             # Create dict with df's from excel file
             excel_data = pd.read_excel(self.file_path, sheet_name=None)
@@ -35,11 +35,12 @@ class TransformCsv:
 
             # Save as delta tables
             dataset = Schema(name=self.schema_name, dest=self.dest_lh, dataset=excel_data, spark=self.spark)
+            dataset.assign_datatypes()
             dataset.save()
 
 
             """         add code above          """
-            logger.info(f"Transform XLSX file {self.file_path} process finished")
+            logger.info(f"Transform Parquet files in {self.file_path} process finished")
             with open(local_log_file, "r") as file:
                 data = file.read()
 
