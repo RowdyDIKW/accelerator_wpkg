@@ -18,11 +18,26 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
     try:
         logger.info(f"Transforming pandas dataframes to spark dataframes of dataset: {dataset_name}")
         for key, df in tqdm(dict_of_dfs.items()):
-            if isinstance(df, pd.DataFrame):
-                logger.info(f"Start transforming {key} to spark dataframe")
-                df = df.astype(str)
-                dict_of_dfs[key] = spark.createDataFrame(df)
-                logger.info(f"Finished transforming {key} to spark dataframe")
+            completed = False
+            try:
+                if isinstance(df, pd.DataFrame):
+                    logger.info(f"Start transforming {key} to spark dataframe")
+                    dict_of_dfs[key] = spark.createDataFrame(df)
+                    completed = True
+                    logger.info(f"Finished transforming {key} to spark dataframe")
+            except:
+                pass
+            if not completed:
+                try:
+                    if isinstance(df, pd.DataFrame):
+                        logger.info(f"Start transforming {key} to spark dataframe")
+                        df = df.astype(str)
+                        dict_of_dfs[key] = spark.createDataFrame(df)
+                        completed = True
+                        logger.info(f"Finished transforming {key} to spark dataframe")
+                except:
+                    raise
+
         return dict_of_dfs
     except Exception as e:
         logger.error(f"""
