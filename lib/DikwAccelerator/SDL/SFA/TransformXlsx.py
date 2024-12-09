@@ -35,7 +35,7 @@ class TransformXlsx:
 
             # Save as delta tables
             dataset = Schema(name=self.schema_name, dest=self.dest_lh, dataset=excel_data, spark=self.spark)
-            dataset.assign_datatypes()
+            # dataset.assign_datatypes()
             dataset.save()
 
 
