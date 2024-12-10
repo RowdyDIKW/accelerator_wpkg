@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import input_file_name
 import pandas as pd
-
 from DikwAccelerator.General.DqUtils import pandas_clean_old_dates
 from DikwAccelerator.General.GeneralUtils   import pandas_to_spark_dfs
 from DikwAccelerator.General.DataClasses    import Schema
@@ -32,17 +32,22 @@ class TransformParquetFiles:
 
             logger.info(f"Transform Parquet files in {self.file_path} process started")
             """         add code below          """
-            # get table name
-            file_name = os.path.basename(self.file_path)
-            name_match = re.search(r"[^\.]+\.([^\.]+)\.parquet$", file_name)
-            table_name = name_match.group(1)
 
-            # Create df
-            pdf = pd.read_parquet(self.file_path)
-            data = {table_name: pandas_clean_old_dates(pdf)}
-            data = pandas_to_spark_dfs(data, self.schema_name, self.spark)
+            df = self.spark.read.format("parquet").load(self.file_path).withColumn("file_name", input_file_name())
+            file_names = df.select("file_name").distinct().rdd.flatMap(lambda x: x).collect()
+            data = {}
+            for file in file_names:
+                # get table name
+                file_name = os.path.basename(file)
+                name_match = re.search(r"[^\.]+\.([^\.]+)\.parquet$", file_name)
+                table_name = name_match.group(1)
+
+                # Create df
+                pdf = pd.read_parquet(self.file_path)
+                data[table_name] = pdf
 
             # Save as delta tables
+            data = pandas_to_spark_dfs(data)
             dataset = Schema(name=self.schema_name, dest=self.dest_lh, dataset=data, spark=self.spark)
             dataset.save()
 
