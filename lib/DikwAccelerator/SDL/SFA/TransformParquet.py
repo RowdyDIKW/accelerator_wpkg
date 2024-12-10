@@ -47,7 +47,7 @@ class TransformParquetFiles:
                 data[table_name] = pdf
 
             # Save as delta tables
-            data = pandas_to_spark_dfs(data)
+            data = pandas_to_spark_dfs(data,self.schema_name,self.spark)
             dataset = Schema(name=self.schema_name, dest=self.dest_lh, dataset=data, spark=self.spark)
             dataset.save()
 
