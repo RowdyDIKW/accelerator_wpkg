@@ -1,15 +1,11 @@
 from dataclasses import dataclass, field
 from pyspark.sql import SparkSession
 import pandas as pd
-
-from DikwAccelerator.General.DqUtils import pandas_clean_old_dates
-from DikwAccelerator.General.GeneralUtils   import pandas_to_spark_dfs
+from DikwAccelerator.General.GeneralUtils   import pandas_to_spark_dfs, rename_unnamed_columns
 from DikwAccelerator.General.DataClasses    import Schema
 from loguru import logger
 import datetime
 import os
-import re
-from pyspark.sql.types import TimestampType, DateType
 
 @dataclass
 class TransformParquetFiles:
@@ -32,18 +28,14 @@ class TransformParquetFiles:
 
             logger.info(f"Transform Parquet files in {self.file_path} process started")
             """         add code below          """
-            # get table name
-            file_name = os.path.basename(self.file_path)
-            name_match = re.search(r"[^\.]+\.([^\.]+)\.parquet$", file_name)
-            table_name = name_match.group(1)
-
-            # Create df
-            pdf = pd.read_parquet(self.file_path)
-            data = {table_name: pandas_clean_old_dates(pdf)}
-            data = pandas_to_spark_dfs(data, self.schema_name, self.spark)
+            # Create dict with df's from excel file
+            excel_data = pd.read_excel(self.file_path, sheet_name=None)
+            excel_data = rename_unnamed_columns(excel_data,self.schema_name)
+            excel_data = pandas_to_spark_dfs(excel_data,self.schema_name, self.spark)
 
             # Save as delta tables
-            dataset = Schema(name=self.schema_name, dest=self.dest_lh, dataset=data, spark=self.spark)
+            dataset = Schema(name=self.schema_name, dest=self.dest_lh, dataset=excel_data, spark=self.spark)
+            dataset.assign_datatypes()
             dataset.save()
 
 
