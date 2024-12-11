@@ -44,7 +44,7 @@ class TransformParquetFiles:
 
                 # Create df
                 pdf = pd.read_parquet(self.file_path)
-                data[table_name] = pdf
+                data[table_name] = pandas_clean_old_dates(pdf)
 
             # Save as delta tables
             data = pandas_to_spark_dfs(data,self.schema_name,self.spark)
