@@ -35,7 +35,8 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
                         dict_of_dfs[key] = spark.createDataFrame(df)
                         completed = True
                         logger.info(f"Finished transforming {key} to spark dataframe")
-                except:
+                except Exception as e:
+                    logger.error(f"pandas_to_spark transformation failed for {key}: {e}")
                     raise
 
         return dict_of_dfs
