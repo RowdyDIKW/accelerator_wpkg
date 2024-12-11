@@ -30,8 +30,11 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
             if not completed:
                 try:
                     if isinstance(df, pd.DataFrame):
-                        logger.info(f"Start transforming {key} to spark dataframe")
+                        logger.info(f"Start transforming {key} to spark dataframe as strings")
                         df = df.astype(str)
+                        logger.info(f"auto casting datatypes to {key}")
+                        df = auto_cast_dataframe(df)
+                        logger.info(f"finished auto casting datatypes to {key}")
                         dict_of_dfs[key] = spark.createDataFrame(df)
                         completed = True
                         logger.info(f"Finished transforming {key} to spark dataframe")
