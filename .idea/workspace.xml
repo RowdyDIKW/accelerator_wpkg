@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="clean old dates">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/General/GeneralUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/GeneralUtils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -330,7 +331,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733917938430</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="clean old dates">
+      <option name="closed" value="true" />
+      <created>1733918190742</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1733918190742</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

@@ -4,7 +4,7 @@ from pyspark.sql import SparkSession
 import pandas as pd
 from loguru import logger
 from pyspark.sql.types import (
-    IntegerType, DoubleType, BooleanType, StringType, DateType, TimestampType
+    IntegerType, DoubleType, BooleanType, StringType, DateType, NullType, StructField, StructType, TimestampType
 )
 from pyspark.sql.functions import col, to_date, to_timestamp
 
@@ -22,7 +22,9 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
             try:
                 if isinstance(df, pd.DataFrame):
                     logger.info(f"Start transforming {key} to spark dataframe")
-                    dict_of_dfs[key] = spark.createDataFrame(df)
+                    df = spark.createDataFrame(df)
+                    df = convert_nulltype_to_string(df)
+                    dict_of_dfs[key] = df
                     completed = True
                     logger.info(f"Finished transforming {key} to spark dataframe")
             except:
@@ -35,8 +37,9 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
                         logger.info(f"auto casting datatypes to {key}")
                         df = auto_cast_dataframe(df)
                         logger.info(f"finished auto casting datatypes to {key}")
-                        dict_of_dfs[key] = spark.createDataFrame(df)
-                        completed = True
+                        df = spark.createDataFrame(df)
+                        df = convert_nulltype_to_string(df)
+                        dict_of_dfs[key] = df
                         logger.info(f"Finished transforming {key} to spark dataframe")
                 except Exception as e:
                     logger.error(f"pandas_to_spark transformation failed for {key}: {e}")
@@ -126,3 +129,20 @@ def auto_cast_dataframe(df):
     for column in df.columns:
         df = detect_and_cast_column(df, column)
     return df
+
+
+def convert_nulltype_to_string(spark_df):
+    # Haal het schema van de DataFrame op
+    schema = spark_df.schema
+
+    # Maak een nieuw schema waarin NullType wordt vervangen door StringType
+    new_schema = StructType([
+        StructField(field.name, StringType() if isinstance(field.dataType, NullType) else field.dataType,
+                    field.nullable)
+        for field in schema
+    ])
+
+    # Pas het nieuwe schema toe
+    new_spark_df = spark_df.rdd.map(lambda row: row.asDict()).toDF(schema=new_schema)
+
+    return new_spark_df
