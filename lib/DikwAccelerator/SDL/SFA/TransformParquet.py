@@ -43,7 +43,7 @@ class TransformParquetFiles:
                 table_name = name_match.group(1)
 
                 # Create df
-                pdf = pd.read_parquet(self.file_path)
+                pdf = pd.read_parquet(self.file_path+f"/{file_name}")
                 data[table_name] = pandas_clean_old_dates(pdf)
 
             # Save as delta tables
