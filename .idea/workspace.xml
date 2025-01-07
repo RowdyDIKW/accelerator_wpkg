@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="prevent voids">
+    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="update TransformParquet.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformParquet.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformParquet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -347,7 +346,23 @@
       <option name="project" value="LOCAL" />
       <updated>1736152979356</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="update TransformParquet.py">
+      <option name="closed" value="true" />
+      <created>1736253186294</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1736253186295</updated>
+    </task>
+    <task id="LOCAL-00032" summary="update TransformParquet.py">
+      <option name="closed" value="true" />
+      <created>1736253450092</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1736253450092</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -384,6 +399,7 @@
     <MESSAGE value="TransformParquet.py" />
     <MESSAGE value="clean old dates" />
     <MESSAGE value="prevent voids" />
-    <option name="LAST_COMMIT_MESSAGE" value="prevent voids" />
+    <MESSAGE value="update TransformParquet.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="update TransformParquet.py" />
   </component>
 </project>
