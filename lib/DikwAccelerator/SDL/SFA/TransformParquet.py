@@ -32,19 +32,22 @@ class TransformParquetFiles:
 
             logger.info(f"Transform Parquet files in {self.file_path} process started")
             """         add code below          """
-
+            logger.info(f"get all file paths")
             df = self.spark.read.format("parquet").load(self.file_path).withColumn("file_name", input_file_name())
             file_names = df.select("file_name").distinct().rdd.flatMap(lambda x: x).collect()
+            logger.info(f"get all file paths finished")
             data = {}
             for file in file_names:
                 # get table name
+                logger.info(f"get table name from {file}")
                 file_name = os.path.basename(file)
                 name_match = re.search(r"[^\.]+\.([^\.]+)\.parquet$", file_name)
                 table_name = name_match.group(1)
-
+                logger.info(f"create pandas dataframe {table_name}")
                 # Create df
                 pdf = pd.read_parquet(self.file_path+f"/{file_name}")
                 data[table_name] = pandas_clean_old_dates(pdf)
+                logger.info(f"create pandas dataframe {table_name} finished")
 
             # Save as delta tables
             data = pandas_to_spark_dfs(data,self.schema_name,self.spark)
