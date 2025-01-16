@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List
 from DikwAccelerator.General.LakehouseUtils import LakehouseUtils
 from DikwAccelerator.General.GeneralUtils import auto_cast_dataframe
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, dataframe
 from DikwAccelerator.General.GeneralUtils import print_with_current_datetime
 from icecream import ic
 from loguru import logger
@@ -39,4 +39,28 @@ class Schema:
             logger.info(f'Finished assigning datatypes to schema: {self.name}')
         except Exception as e:
             logger.error(f"assigning datatypes to schema: {self.name} failed: {e}")
+            raise
+
+@dataclass
+class Table:
+    """Class for creating a dataset"""
+    table_name: str
+    dest_schema: str # name of dataset (this is also used as prefix for all the tables
+    dest_lakehouse: str
+    table: dataframe
+    spark: SparkSession
+    key_columns: Optional[List[str]] = field(default=None)
+
+    def __post_init__(self):
+        self.lh_obj = LakehouseUtils(self.dest_lakehouse,self.spark)
+
+    def save(self) -> None:
+        try:
+            logger.info(f'saving table: {self.table_name}')
+            if self.key_columns is None:
+                self.lh_obj.write_table(self.dest_schema+'.'+self.table_name,self.table)
+            else:
+                self.lh_obj.save_table(self.dest_schema+'.'+self.table_name,self.table,self.key_columns)
+        except Exception as e:
+            logger.error(f"saving table schema: {self.table_name} failed: {e}")
             raise
