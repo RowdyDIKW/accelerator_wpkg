@@ -71,7 +71,7 @@ class TransformParquetFiles:
             raise
 
 @dataclass
-class TransformParquetFile:
+class TransformParquetToDeltaTable:
     table_name : str
     file_path : str
     log_path : str
