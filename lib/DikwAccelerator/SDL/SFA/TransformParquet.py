@@ -117,5 +117,5 @@ class TransformParquetToDeltaTable:
             status = "succes"
             return status
         except Exception as e:
-            logger.error(f"Transform XLSX file {self.file_path} process failed: {e}")
+            logger.error(f"Transform parquet file {self.file_path} process failed: {e}")
             raise

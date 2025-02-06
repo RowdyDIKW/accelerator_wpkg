@@ -6,7 +6,7 @@ from loguru import logger
 from pyspark.sql.types import (
     IntegerType, DoubleType, BooleanType, StringType, DateType, NullType, StructField, StructType, TimestampType
 )
-from pyspark.sql.functions import col, to_date, to_timestamp
+from pyspark.sql.functions import col, to_date, to_timestamp, trim
 
 def print_with_current_datetime(message):
     current_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -24,7 +24,7 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
                     logger.info(f"Start transforming {key} to spark dataframe")
                     df = spark.createDataFrame(df)
                     df = convert_nulltype_to_string(df)
-                    dict_of_dfs[key] = df
+
                     completed = True
                     logger.info(f"Finished transforming {key} to spark dataframe")
             except:
@@ -39,11 +39,16 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
                         logger.info(f"finished auto casting datatypes to {key}")
                         df = spark.createDataFrame(df)
                         df = convert_nulltype_to_string(df)
-                        dict_of_dfs[key] = df
+
                         logger.info(f"Finished transforming {key} to spark dataframe")
                 except Exception as e:
                     logger.error(f"pandas_to_spark transformation failed for {key}: {e}")
                     raise
+            trimmed_df = df.select(
+                [trim(col(column)).alias(column) if dtype == "string" else col(column).alias(column)
+                 for column, dtype in df.dtypes]
+            )
+            dict_of_dfs[key] = trimmed_df
 
         return dict_of_dfs
     except Exception as e:

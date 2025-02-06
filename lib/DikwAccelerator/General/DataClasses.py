@@ -56,6 +56,8 @@ class Table:
 
     def save(self) -> None:
         try:
+            logger.info(f"Creating schema {self.dest_schema} if it doesnt exist")
+            self.spark.sql(f"CREATE SCHEMA IF NOT EXISTS {self.dest_lakehouse}.{self.dest_schema}")
             logger.info(f'saving table: {self.table_name}')
             if self.key_columns is None:
                 self.lh_obj.write_table(self.dest_schema+'.'+self.table_name,self.table)
