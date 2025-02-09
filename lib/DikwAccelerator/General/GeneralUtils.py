@@ -1,12 +1,17 @@
 import time
+from datetime import datetime
+from decimal import Decimal
+
 from tqdm.notebook import tqdm
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, Window
 import pandas as pd
 from loguru import logger
 from pyspark.sql.types import (
-    IntegerType, DoubleType, BooleanType, StringType, DateType, NullType, StructField, StructType, TimestampType
+    IntegerType, DoubleType, BooleanType, StringType, DateType, NullType, StructField, StructType, TimestampType,
+    LongType, DecimalType
 )
-from pyspark.sql.functions import col, to_date, to_timestamp, trim
+from pyspark.sql.functions import col, to_date, to_timestamp, trim, row_number
+
 
 def print_with_current_datetime(message):
     current_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -151,3 +156,38 @@ def convert_nulltype_to_string(spark_df):
     new_spark_df = spark_df.rdd.map(lambda row: row.asDict()).toDF(schema=new_schema)
 
     return new_spark_df
+
+def add_num_id(df, order_by: str, id_name: str):
+    logger.info(f'start adding id column to dataframe')
+    window_spec = Window.orderBy(order_by)
+    df = df.dropDuplicates().withColumn(id_name, row_number().over(window_spec))
+    df = df.select([id_name] + [col for col in df.columns if col != id_name])
+    logger.info(f'finished adding id column to dataframe')
+    return df
+
+
+def insert_default_row(df):
+    logger.info(f'start inserting default row to dataframe')
+    schema = df.schema
+    default_values = []
+    for field in schema:
+        if isinstance(field.dataType, StringType):
+            default_values.append("Onbekend")
+        elif isinstance(field.dataType, (IntegerType, LongType)):
+            default_values.append(-1)
+        elif isinstance(field.dataType, DateType):
+            default_values.append(datetime(1900, 1, 1).date())
+        elif isinstance(field.dataType, TimestampType):
+            default_values.append(datetime(1900, 1, 1))
+        elif isinstance(field.dataType, DoubleType):
+            default_values.append(-1.0)
+        elif isinstance(field.dataType, DecimalType):
+            default_values.append(Decimal('-1.00'))
+        else:
+            default_values.append(None)
+
+    default_row = [tuple(default_values)]
+
+    default_df = df.sparkSession.createDataFrame(default_row, schema=schema)
+    logger.info(f'finished inserting default row to dataframe')
+    return df.union(default_df)
