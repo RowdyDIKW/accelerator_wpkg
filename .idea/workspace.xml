@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="update TransformParquet.py">
+      <change afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/Logger.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/General/DataClasses.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/DataClasses.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/General/GeneralUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/GeneralUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformParquet.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformParquet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
