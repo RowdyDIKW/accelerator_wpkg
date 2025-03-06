@@ -25,7 +25,7 @@ class Log:
 
     def close(self):
         try:
-            logger.info(f"Transform Parquet files in {self.file_path} process finished")
+            logger.info(f"Transform Parquet files in {self.log_path} process finished")
             with open(self.local_log_file, "r") as file:
                 data = file.read()
 
