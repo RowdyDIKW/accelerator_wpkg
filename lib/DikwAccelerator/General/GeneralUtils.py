@@ -160,7 +160,7 @@ def convert_nulltype_to_string(spark_df):
 def add_num_id(df, order_by: str, id_name: str):
     logger.info(f'start adding id column to dataframe')
     window_spec = Window.orderBy(order_by)
-    df = df.dropDuplicates().withColumn(id_name, row_number().over(window_spec))
+    df = df.withColumn(id_name, row_number().over(window_spec))
     df = df.select([id_name] + [col for col in df.columns if col != id_name])
     logger.info(f'finished adding id column to dataframe')
     return df
