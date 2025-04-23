@@ -1,3 +1,5 @@
+import time
+
 from loguru import logger
 from pyspark.sql import DataFrame
 from pyspark.sql import SparkSession
@@ -84,7 +86,18 @@ class LakehouseUtils:
     def write_table(self, table_name: str,df: DataFrame):
         try:
             logger.info(f"Start writing table: {table_name}")
-            df.write.format("delta").mode('overwrite').option("overwriteSchema", "true").saveAsTable(f"{self.lakehouse_name}.{table_name}")
+            MAX_RETRIES = 30
+            RETRY_DELAY = 10
+
+            for attempt in range(MAX_RETRIES):
+                try:
+                    df.write.format("delta").mode('overwrite').option("overwriteSchema", "true").saveAsTable(f"{self.lakehouse_name}.{table_name}")
+                    break
+                except Exception as e:
+                    if "ConcurrentAppendException" in str(e) and attempt < MAX_RETRIES - 1:
+                        time.sleep(RETRY_DELAY)
+                    else:
+                        raise
             logger.info(f"Finished writing table: {table_name}")
         except Exception as e:
             logger.error(f"write_table() failed: {e}")
