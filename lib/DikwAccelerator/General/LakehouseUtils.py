@@ -87,7 +87,7 @@ class LakehouseUtils:
         try:
             logger.info(f"Start writing table: {table_name}")
             MAX_RETRIES = 30
-            RETRY_DELAY = 10
+            RETRY_DELAY = 3
 
             for attempt in range(MAX_RETRIES):
                 try:

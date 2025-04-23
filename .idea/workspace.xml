@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="lose drop duplicates">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="retry on writes">
       <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/General/LakehouseUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/LakehouseUtils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -419,7 +418,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742406466039</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="retry on writes">
+      <option name="closed" value="true" />
+      <created>1745441493269</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1745441493269</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -434,7 +441,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="silver draft 1" />
     <MESSAGE value="silver draft 1.2" />
     <MESSAGE value="silver draft 1.3" />
     <MESSAGE value="merge function can now handle more then one key column" />
@@ -459,6 +465,7 @@
     <MESSAGE value="update TransformParquet.py" />
     <MESSAGE value="logger function" />
     <MESSAGE value="lose drop duplicates" />
-    <option name="LAST_COMMIT_MESSAGE" value="lose drop duplicates" />
+    <MESSAGE value="retry on writes" />
+    <option name="LAST_COMMIT_MESSAGE" value="retry on writes" />
   </component>
 </project>
