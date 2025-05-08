@@ -72,7 +72,51 @@ spark = SparkSession.builder.appName("MyApp").getOrCreate()
 lakehouse = LakehouseUtils(lakehouse_name="my_lakehouse", spark=spark)
 ```
 
-### 2. Data Quality Utilities
+### 6. Slowly Changing Dimension (SCD) Table Writing/Merging
+
+LakehouseUtils supports writing and merging tables using Slowly Changing Dimension (SCD) strategies via the `mode` parameter. The supported modes are `"scd1"` and `"scd2"`.
+
+#### SCD1 (Type 1) Example
+
+SCD1 overwrites existing records with new data based on the key columns.
+
+```python
+lakehouse.write_table(
+    df=new_data_df,
+    table_name="customers",
+    mode="scd1",  # SCD Type 1: overwrite matching records
+    key_columns=["customer_id"]
+)
+```
+
+#### SCD2 (Type 2) Example
+
+SCD2 tracks historical changes by expiring old records and inserting new ones. The target table **must** have `effective_date` and `expiry_date` columns of type `TimestampType`.
+If the input DataFrame does not include these columns, they will be added automatically:
+- `effective_date` will be set to the current timestamp
+- `expiry_date` will be set to null
+
+```python
+lakehouse.write_table(
+    df=new_data_df,
+    table_name="customers",
+    mode="scd2",  # SCD Type 2: track history with effective/expiry dates
+    key_columns=["customer_id"],
+    effective_date_col="effective_date",
+    expiry_date_col="expiry_date"
+)
+```
+
+**SCD2 Requirements:**
+- The target table must have `effective_date` and `expiry_date` columns (type: `TimestampType`). The input DataFrame does not need to provide these columns; they will be added automatically if missing.
+- Provide the column names via `effective_date_col` and `expiry_date_col` if they differ from the defaults.
+- On updates, the previous record's `expiry_date` is set to the current timestamp, and a new record is inserted with a new `effective_date` and a far-future `expiry_date`.
+
+**Behavior:**
+- `"scd1"`: Overwrites existing rows matching the key columns.
+- `"scd2"`: Expires old rows and inserts new ones, preserving history.
+
+For more details, see the LakehouseUtils API section below.
 
 ```python
 from DikwAccelerator.General.DqUtils import DqUtils
@@ -164,6 +208,28 @@ Structured data transformation utilities.
 - **LakehouseUtils**
   - `__init__(lakehouse_name: str, spark: SparkSession)`: Initialize with lakehouse name and Spark session.
   - Methods for retrieving metadata, table names, schemas, and DataFrames.
+  - `write_table(df, table_name, mode=None, key_columns=None, effective_date_col=None, expiry_date_col=None, ...)`: Write or merge a DataFrame into a Delta table with support for SCD modes.
+
+    **SCD Table Writing/Merging (`mode` parameter):**
+    - `mode="scd1"`: Slowly Changing Dimension Type 1. Overwrites existing records in the target table that match the specified `key_columns`. No history is preserved.
+    - `mode="scd2"`: Slowly Changing Dimension Type 2. Preserves history by expiring previous records and inserting new ones. Requires the target table to have `effective_date` and `expiry_date` columns (type: `TimestampType`). On update, the previous record's `expiry_date` is set to the current timestamp, and a new record is inserted with a new `effective_date` and a far-future `expiry_date`.
+
+    **SCD2 Requirements:**
+    - The target table must have `effective_date` and `expiry_date` columns.
+    - You may specify custom column names using `effective_date_col` and `expiry_date_col`.
+    - `key_columns` must be provided to identify unique records.
+
+    **Example:**
+    ```python
+    lakehouse.write_table(
+        df=new_data_df,
+        table_name="customers",
+        mode="scd2",
+        key_columns=["customer_id"],
+        effective_date_col="effective_date",
+        expiry_date_col="expiry_date"
+    )
+    ```
 
 - **DqUtils**
   - `deduplicate_tables(tables: dict) -> dict`: Deduplicate Spark DataFrames in a dictionary.
