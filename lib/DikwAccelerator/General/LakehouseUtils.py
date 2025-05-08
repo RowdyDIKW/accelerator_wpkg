@@ -11,30 +11,72 @@ class LakehouseUtils:
         self.lakehouse_name = lakehouse_name
         self.spark = spark
 
-    def save_tables(self,tables: dict, schema = False,key_columns = False):
+    def save_tables(self, tables: dict, schema=False, key_columns=False, mode="auto"):
+        """
+        Save multiple tables to the lakehouse.
+
+        Args:
+            tables (dict): Dictionary of {table_name: DataFrame}.
+            schema (str or bool): Optional schema name.
+            key_columns (list or bool): List of key columns for merge/upsert. If False, overwrite is used.
+            mode (str): "overwrite" to always overwrite, "merge" to always merge (requires key_columns),
+                        "auto" (default) to merge if table exists and key_columns are provided, else overwrite.
+
+        Raises:
+            Exception: If saving fails.
+        """
         try:
             if schema:
                 logger.info(f"Creating schema {schema} if it doesnt exist")
                 self.spark.sql(f"CREATE SCHEMA IF NOT EXISTS {self.lakehouse_name}.{schema}")
-            if key_columns:
-                for key, df in tqdm(tables.items(), desc='Saving tables', unit='Table'):
+            for key, df in tqdm(tables.items(), desc='Saving tables', unit='Table'):
+                table_full_name = (f"{schema}." if schema else "") + key
+                if key_columns:
                     key_columns_present = [col for col in key_columns if col in df.columns]
-                    self.save_table((f"{schema}." if schema else "")+key,df,key_columns_present)
-            else:
-                for key, df in tqdm(tables.items(), desc='Saving tables', unit='Table'):
-                    self.write_table((f"{schema}." if schema else "")+key,df)
+                else:
+                    key_columns_present = []
+                self.save_table(
+                    table_full_name,
+                    df,
+                    key_columns_present,
+                    mode=mode
+                )
         except Exception as e:
             logger.error(f"save_tables() failed: {e}")
             raise
 
 
 
-    def save_table(self, table_name: str,df: DataFrame, key_columns: list):
+    def save_table(self, table_name: str, df: DataFrame, key_columns: list, mode="auto"):
+        """
+        Save a single table to the lakehouse.
+
+        Args:
+            table_name (str): Name of the table (optionally schema-qualified).
+            df (DataFrame): DataFrame to save.
+            key_columns (list): List of key columns for merge/upsert.
+            mode (str): "overwrite" to always overwrite, "merge" to always merge (requires key_columns),
+                        "auto" (default) to merge if table exists and key_columns are provided, else overwrite.
+
+        Raises:
+            Exception: If saving fails.
+        """
         try:
-            if self.spark.catalog.tableExists(f"{self.lakehouse_name}.{table_name}"):
-                self.merge_table(table_name,df, key_columns)
-            else:
-                self.write_table(table_name,df)
+            table_exists = self.spark.catalog.tableExists(f"{self.lakehouse_name}.{table_name}")
+            if mode == "overwrite":
+                self.write_table(table_name, df)
+            elif mode == "merge":
+                if not key_columns:
+                    raise ValueError("key_columns must be provided for merge mode.")
+                if not table_exists:
+                    self.write_table(table_name, df)
+                else:
+                    self.merge_table(table_name, df, key_columns)
+            else:  # auto mode (default, backward compatible)
+                if table_exists and key_columns:
+                    self.merge_table(table_name, df, key_columns)
+                else:
+                    self.write_table(table_name, df)
         except Exception as e:
             logger.error(f"save_table() failed: {e}")
             raise
