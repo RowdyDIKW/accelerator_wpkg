@@ -19,6 +19,22 @@ def print_with_current_datetime(message):
 
 indent = "-      "
 
+import json
+
+def flatten_json(pandas_df):
+    """
+    For any column in the DataFrame that contains arrays (lists) or objects (dicts),
+    convert those values to strings (using json.dumps). Other values are left as-is.
+    Returns a DataFrame with the same columns, with arrays/objects stringified.
+    """
+    df = pandas_df.copy()
+    for col in df.columns:
+        # Check if any value in the column is a list or dict
+        if df[col].apply(lambda x: isinstance(x, (list, dict))).any():
+            df[col] = df[col].apply(lambda x: json.dumps(x) if isinstance(x, (list, dict)) else x)
+    return df
+
+
 def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession) -> dict:
     try:
         logger.info(f"Transforming pandas dataframes to spark dataframes of dataset: {dataset_name}")
