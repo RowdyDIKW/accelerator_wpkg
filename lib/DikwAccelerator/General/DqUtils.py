@@ -27,10 +27,29 @@ class DqUtils:
         if duplicates_df.count() > 0:
             raise ValueError("Duplicates found for one or more of the key columns")
 
+    
+
 
 def pandas_clean_old_dates(df):
     for column in df.columns:
         if pd.api.types.is_datetime64_any_dtype(df[column]):
             df[column] = df[column].apply(lambda x: np.nan if x.year < 1900 else x)
 
+    return df
+
+def clean_column_names(self, df: DataFrame) -> DataFrame:
+    """
+    Cleans DataFrame column names by replacing , ; { } ( ) \ = with underscores.
+    Args:
+        df (DataFrame): Input Spark DataFrame.
+    Returns:
+        DataFrame: DataFrame with cleaned column names.
+    """
+    import re
+    cleaned_cols = [
+        re.sub(r'[,\;\{\}\(\)\\=]', '_', col) for col in df.columns
+    ]
+    for old, new in zip(df.columns, cleaned_cols):
+        if old != new:
+            df = df.withColumnRenamed(old, new)
     return df

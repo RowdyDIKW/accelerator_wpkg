@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import input_file_name
 import pandas as pd
-from DikwAccelerator.General.DqUtils import pandas_clean_old_dates
+from DikwAccelerator.General.DqUtils import pandas_clean_old_dates, clean_column_names
 from DikwAccelerator.General.GeneralUtils   import pandas_to_spark_dfs, flatten_json
 from DikwAccelerator.General.DataClasses    import Schema, Table
 from loguru import logger
@@ -36,7 +36,7 @@ class TransformJsonToDeltaTable:
 
             logger.info(f"create pandas dataframe {self.table_name}")
             # Create df
-            pdf = pd.read_json(self.file_path)
+            pdf = pd.read_json(self.file_path,typ="series")
             pdf = flatten_json(pdf)
             pdf = pandas_clean_old_dates(pdf)
             logger.info(f"create pandas dataframe {self.table_name} finished")

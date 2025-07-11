@@ -11,7 +11,7 @@ from pyspark.sql.types import (
     LongType, DecimalType
 )
 from pyspark.sql.functions import col, to_date, to_timestamp, trim, row_number
-
+from DikwAccelerator.General.DqUtils import clean_column_names
 
 def print_with_current_datetime(message):
     current_datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -45,6 +45,7 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
                     logger.info(f"Start transforming {key} to spark dataframe")
                     df = spark.createDataFrame(df)
                     df = convert_nulltype_to_string(df)
+                    df = clean_column_names(df)
 
                     completed = True
                     logger.info(f"Finished transforming {key} to spark dataframe")
@@ -60,6 +61,7 @@ def pandas_to_spark_dfs(dict_of_dfs: dict,dataset_name: str,spark: SparkSession)
                         logger.info(f"finished auto casting datatypes to {key}")
                         df = spark.createDataFrame(df)
                         df = convert_nulltype_to_string(df)
+                        df = clean_column_names(df)
 
                         logger.info(f"Finished transforming {key} to spark dataframe")
                 except Exception as e:
