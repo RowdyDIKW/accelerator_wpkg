@@ -36,7 +36,7 @@ class TransformJsonToDeltaTable:
 
             logger.info(f"create pandas dataframe {self.table_name}")
             # Create df
-            pdf = pd.read_json(self.file_path,typ="series")
+            pdf = pd.read_json(self.file_path)
             pdf = flatten_json(pdf)
             pdf = pandas_clean_old_dates(pdf)
             logger.info(f"create pandas dataframe {self.table_name} finished")

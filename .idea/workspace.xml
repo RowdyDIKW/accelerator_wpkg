@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="transformjson">
+    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="replace odd characters in column names">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/General/DqUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/DqUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/General/GeneralUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/GeneralUtils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformJson.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformJson.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -454,7 +452,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752221798068</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="replace odd characters in column names">
+      <option name="closed" value="true" />
+      <created>1752236525289</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1752236525289</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -469,7 +475,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="merge function can now handle more then one key column" />
     <MESSAGE value="injest bronze functionalities" />
     <MESSAGE value="excelerator wpkg v1" />
     <MESSAGE value="excelerator wpkg v0.7" />
@@ -494,6 +499,7 @@
     <MESSAGE value="retry on writes" />
     <MESSAGE value="change delay" />
     <MESSAGE value="transformjson" />
-    <option name="LAST_COMMIT_MESSAGE" value="transformjson" />
+    <MESSAGE value="replace odd characters in column names" />
+    <option name="LAST_COMMIT_MESSAGE" value="replace odd characters in column names" />
   </component>
 </project>
