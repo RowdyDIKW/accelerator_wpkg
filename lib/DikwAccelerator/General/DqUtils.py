@@ -47,7 +47,7 @@ def clean_column_names(df: DataFrame) -> DataFrame:
     """
     import re
     cleaned_cols = [
-        re.sub(r'[,\;\{\}\(\)\\=]', '_', col) for col in df.columns
+        re.sub(r'[ ,\;\{\}\(\)\\=]', '_', col) for col in df.columns
     ]
     for old, new in zip(df.columns, cleaned_cols):
         if old != new:

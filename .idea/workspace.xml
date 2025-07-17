@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="geen series">
+    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="clean_columns">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/General/DqUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/DqUtils.py" afterDir="false" />
     </list>
@@ -468,7 +468,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752237090290</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="clean_columns">
+      <option name="closed" value="true" />
+      <created>1752756958613</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1752756958613</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -483,7 +491,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="excelerator wpkg v1" />
     <MESSAGE value="excelerator wpkg v0.7" />
     <MESSAGE value="added requirements" />
     <MESSAGE value="added xlsx connector" />
@@ -508,6 +515,7 @@
     <MESSAGE value="transformjson" />
     <MESSAGE value="replace odd characters in column names" />
     <MESSAGE value="geen series" />
-    <option name="LAST_COMMIT_MESSAGE" value="geen series" />
+    <MESSAGE value="clean_columns" />
+    <option name="LAST_COMMIT_MESSAGE" value="clean_columns" />
   </component>
 </project>
