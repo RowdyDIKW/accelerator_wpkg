@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="clean_columns">
-      <change afterPath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformToTable.py" afterDir="false" />
+    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="TransformToTable.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformToTable.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformToTable.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -484,7 +484,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752757706939</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="TransformToTable.py">
+      <option name="closed" value="true" />
+      <created>1752764685646</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1752764685646</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -499,7 +507,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="excelerator wpkg v0.7" />
     <MESSAGE value="added requirements" />
     <MESSAGE value="added xlsx connector" />
     <MESSAGE value="versioning" />
@@ -524,6 +531,7 @@
     <MESSAGE value="replace odd characters in column names" />
     <MESSAGE value="geen series" />
     <MESSAGE value="clean_columns" />
-    <option name="LAST_COMMIT_MESSAGE" value="clean_columns" />
+    <MESSAGE value="TransformToTable.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="TransformToTable.py" />
   </component>
 </project>
