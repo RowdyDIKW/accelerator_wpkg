@@ -37,7 +37,7 @@ def pandas_clean_old_dates(df):
 
     return df
 
-def clean_column_names(self, df: DataFrame) -> DataFrame:
+def clean_column_names(df: DataFrame) -> DataFrame:
     """
     Cleans DataFrame column names by replacing , ; { } ( ) \ = with underscores.
     Args:

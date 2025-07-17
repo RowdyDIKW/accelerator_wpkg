@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="replace odd characters in column names">
+    <list default="true" id="6c3af2bc-e7ac-4dea-8d1e-23270566ebc6" name="Changes" comment="geen series">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformJson.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/SDL/SFA/TransformJson.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/DikwAccelerator/General/DqUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/DikwAccelerator/General/DqUtils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -460,7 +460,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752236525289</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="geen series">
+      <option name="closed" value="true" />
+      <created>1752237090290</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1752237090290</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -475,7 +483,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="injest bronze functionalities" />
     <MESSAGE value="excelerator wpkg v1" />
     <MESSAGE value="excelerator wpkg v0.7" />
     <MESSAGE value="added requirements" />
@@ -500,6 +507,7 @@
     <MESSAGE value="change delay" />
     <MESSAGE value="transformjson" />
     <MESSAGE value="replace odd characters in column names" />
-    <option name="LAST_COMMIT_MESSAGE" value="replace odd characters in column names" />
+    <MESSAGE value="geen series" />
+    <option name="LAST_COMMIT_MESSAGE" value="geen series" />
   </component>
 </project>
