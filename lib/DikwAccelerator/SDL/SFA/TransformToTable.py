@@ -15,7 +15,7 @@ class TransformToTable:
     dest_lh: str
     spark: SparkSession
 
-    def execute(self) -> str:
+    def execute(self):
         try:
             logger.info("Transform to table processes started")
             date_dir = datetime.now().strftime("%Y/%m/%d")
