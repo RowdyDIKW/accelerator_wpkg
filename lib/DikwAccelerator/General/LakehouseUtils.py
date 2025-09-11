@@ -131,12 +131,20 @@ class Entity:
                 merge_condition = " AND ".join(conditions)
                 delta_table = DeltaTable.forName(self.spark, self.table_name)
 
+                from datetime import timedelta
+
                 delta_table.alias(delta_alias).merge(
-                delta_df.alias(updates_alias),
-                merge_condition
-                ).whenMatchedUpdateAll() \
-                .whenNotMatchedInsertAll() \
-                .execute()
+                    delta_df.alias(updates_alias),
+                    merge_condition
+                ).whenMatchedUpdate(
+                    {
+                        "ActiveFlag": F.lit(False),
+                        "M_UTC_END": F.lit((self.current_timestamp - timedelta(seconds=1)))
+                    }
+                ).execute()
+
+                # Insert all rows of delta_df into the table after the merge
+                delta_df.write.format("delta").mode("append").saveAsTable(self.table_name)
 
                 logger.info(f"Finished merging table: {self.table_name}")
             else:
@@ -171,4 +179,5 @@ class Entity:
         df = self.df.withColumn('M_COD_INSTANCE', self.instance)\
                 .withColumn("M_UTC_RECORD_INSERTED", self.current_timestamp)\
                 .withColumn("M_UTC_START", self.current_timestamp) \
-                .withColumn("M_UTC_END", F.lit(None))
+                .withColumn("M_UTC_END", F.lit(None)\
+                .withColumn("ActiveFlag", F.lit(True)))
