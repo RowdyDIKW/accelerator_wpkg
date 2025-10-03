@@ -93,17 +93,30 @@ class TransformParquetToDeltaTable:
             logger.info(f"Transform Parquet files in {self.file_path} process started")
             """         add code below          """
 
-            logger.info(f"create pandas dataframe {self.table_name}")
-            # Create df
-            pdf = pd.read_parquet(self.file_path)
-            pdf = pandas_clean_old_dates(pdf)
-            logger.info(f"create pandas dataframe {self.table_name} finished")
+            try:
+                logger.info(f"Trying direct Spark read for {self.table_name}")
+                df = self.spark.read.parquet(self.file_path)
+                logger.info(f"Direct Spark read succeeded for {self.table_name}")
+            except Exception as spark_err:
+                logger.warning(f"Direct Spark read failed: {spark_err}")
+                logger.info(f"Falling back to Pandas for {self.table_name}")
 
-            # Save as delta tables
-            data = {}
-            data[self.table_name] = pdf
-            data = pandas_to_spark_dfs(data,self.schema_name,self.spark)
-            table = Table(table_name=self.table_name, dest_schema=self.schema_name,dest_lakehouse=self.dest_lh,table= data[self.table_name],spark=self.spark)
+                # Pandas fallback
+                pdf = pd.read_parquet(self.file_path)
+                pdf = pandas_clean_old_dates(pdf)
+
+                # Pandas → Spark
+                df = self.spark.createDataFrame(pdf.astype(str))
+                logger.info(f"Fallback Pandas → Spark succeeded for {self.table_name}")
+
+            # Save as delta table
+            table = Table(
+                table_name=self.table_name,
+                dest_schema=self.schema_name,
+                dest_lakehouse=self.dest_lh,
+                table=df,
+                spark=self.spark
+            )
             table.save()
             """         add code above          """
             logger.info(f"Transform Parquet files in {self.file_path} process finished")
