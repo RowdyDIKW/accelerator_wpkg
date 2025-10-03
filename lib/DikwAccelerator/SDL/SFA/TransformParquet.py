@@ -80,6 +80,8 @@ class TransformParquetToDeltaTable:
     spark : SparkSession
 
     def __post_init__(self):
+        if re.match(r"^\d", self.schema_name):
+            self.schema_name = f"s_{self.schema_name}"
         self.local_log_directory = f"/tmp/TransformParquetFile_{self.table_name}_log"
         self.time = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
