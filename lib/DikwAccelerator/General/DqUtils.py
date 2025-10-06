@@ -3,6 +3,7 @@ from pyspark.sql import functions as F
 from tqdm.notebook import tqdm
 import numpy as np
 import pandas as pd
+from pyspark.sql.types import TimestampType, DateType
 
 class DqUtils:
     def __init__(self):
@@ -29,6 +30,17 @@ class DqUtils:
 
     
 
+def spark_clean_old_dates(df: DataFrame) -> DataFrame:
+    """
+    Zet datums vóór 1900 om naar null in alle timestamp/date kolommen.
+    """
+    for column, dtype in df.dtypes:
+        if dtype in ['timestamp', 'date']:
+            df = df.withColumn(
+                column,
+                F.when(F.year(F.col(column)) < 1900, F.lit(None)).otherwise(F.col(column))
+            )
+    return df
 
 def pandas_clean_old_dates(df):
     for column in df.columns:

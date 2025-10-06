@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import input_file_name
 import pandas as pd
-from DikwAccelerator.General.DqUtils import pandas_clean_old_dates
+from DikwAccelerator.General.DqUtils import pandas_clean_old_dates, spark_clean_old_dates
 from DikwAccelerator.General.GeneralUtils   import pandas_to_spark_dfs
 from DikwAccelerator.General.DataClasses    import Schema, Table
 from loguru import logger
@@ -98,6 +98,7 @@ class TransformParquetToDeltaTable:
             try:
                 logger.info(f"Trying direct Spark read for {self.table_name}")
                 df = self.spark.read.parquet(self.file_path)
+                df = spark_clean_old_dates(df)
                 logger.info(f"Direct Spark read succeeded for {self.table_name}")
             except Exception as spark_err:
                 logger.warning(f"Direct Spark read failed: {spark_err}")
