@@ -96,12 +96,12 @@ class TransformParquetToDeltaTable:
             """         add code below          """
 
             try:
-                logger.info(f"Trying direct Spark read for {self.table_name}")
-                df = self.spark.read.parquet(self.file_path)
-                df = spark_clean_old_dates(df)
-                logger.info(f"Direct Spark read succeeded for {self.table_name}")
-            except Exception as spark_err:
-                logger.warning(f"Direct Spark read failed: {spark_err}")
+            #     logger.info(f"Trying direct Spark read for {self.table_name}")
+            #     df = self.spark.read.parquet(self.file_path)
+            #     df = spark_clean_old_dates(df)
+            #     logger.info(f"Direct Spark read succeeded for {self.table_name}")
+            # except Exception as spark_err:
+            #     logger.warning(f"Direct Spark read failed: {spark_err}")
                 logger.info(f"Falling back to Pandas for {self.table_name}")
 
                 # Pandas fallback
@@ -111,6 +111,10 @@ class TransformParquetToDeltaTable:
                 # Pandas → Spark
                 df = self.spark.createDataFrame(pdf.astype(str))
                 logger.info(f"Fallback Pandas → Spark succeeded for {self.table_name}")
+
+            except Exception as e:
+                logger.error(f"Transform parquet file {self.file_path} process failed: {e}")
+            raise
 
             # Save as delta table
             table = Table(
