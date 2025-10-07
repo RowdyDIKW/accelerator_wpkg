@@ -114,7 +114,7 @@ class TransformParquetToDeltaTable:
 
             except Exception as e:
                 logger.error(f"Transform parquet file {self.file_path} process failed: {e}")
-            raise
+                raise
 
             # Save as delta table
             table = Table(
