@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import input_file_name
 import pandas as pd
-from DikwAccelerator.General.DqUtils import pandas_clean_old_dates, spark_clean_old_dates
+from DikwAccelerator.General.DqUtils import pandas_clean_old_dates
 from DikwAccelerator.General.GeneralUtils   import pandas_to_spark_dfs
 from DikwAccelerator.General.DataClasses    import Schema, Table
 from loguru import logger
@@ -80,8 +80,6 @@ class TransformParquetToDeltaTable:
     spark : SparkSession
 
     def __post_init__(self):
-        if re.match(r"^\d", self.schema_name):
-            self.schema_name = f"s_{self.schema_name}"
         self.local_log_directory = f"/tmp/TransformParquetFile_{self.table_name}_log"
         self.time = f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
 
@@ -95,35 +93,17 @@ class TransformParquetToDeltaTable:
             logger.info(f"Transform Parquet files in {self.file_path} process started")
             """         add code below          """
 
-            try:
-            #     logger.info(f"Trying direct Spark read for {self.table_name}")
-            #     df = self.spark.read.parquet(self.file_path)
-            #     df = spark_clean_old_dates(df)
-            #     logger.info(f"Direct Spark read succeeded for {self.table_name}")
-            # except Exception as spark_err:
-            #     logger.warning(f"Direct Spark read failed: {spark_err}")
-                logger.info(f"Falling back to Pandas for {self.table_name}")
+            logger.info(f"create pandas dataframe {self.table_name}")
+            # Create df
+            pdf = pd.read_parquet(self.file_path)
+            pdf = pandas_clean_old_dates(pdf)
+            logger.info(f"create pandas dataframe {self.table_name} finished")
 
-                # Pandas fallback
-                pdf = pd.read_parquet(self.file_path)
-                pdf = pandas_clean_old_dates(pdf)
-
-                # Pandas → Spark
-                df = self.spark.createDataFrame(pdf.astype(str))
-                logger.info(f"Fallback Pandas → Spark succeeded for {self.table_name}")
-
-            except Exception as e:
-                logger.error(f"Transform parquet file {self.file_path} process failed: {e}")
-                raise
-
-            # Save as delta table
-            table = Table(
-                table_name=self.table_name,
-                dest_schema=self.schema_name,
-                dest_lakehouse=self.dest_lh,
-                table=df,
-                spark=self.spark
-            )
+            # Save as delta tables
+            data = {}
+            data[self.table_name] = pdf
+            data = pandas_to_spark_dfs(data,self.schema_name,self.spark)
+            table = Table(table_name=self.table_name, dest_schema=self.schema_name,dest_lakehouse=self.dest_lh,table= data[self.table_name],spark=self.spark)
             table.save()
             """         add code above          """
             logger.info(f"Transform Parquet files in {self.file_path} process finished")
