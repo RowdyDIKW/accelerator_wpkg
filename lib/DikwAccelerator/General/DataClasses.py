@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Optional, List
-from DikwAccelerator.General.LakehouseUtils import LakehouseUtils
+from DikwAccelerator.General.LakehouseUtils import LakehouseUtils, Entity
 from DikwAccelerator.General.GeneralUtils import auto_cast_dataframe
 from pyspark.sql import SparkSession, dataframe
 from DikwAccelerator.General.GeneralUtils import print_with_current_datetime
@@ -47,12 +47,13 @@ class Table:
     table_name: str
     dest_schema: str # name of dataset (this is also used as prefix for all the tables
     dest_lakehouse: str
+    instance: int
     table: dataframe
     spark: SparkSession
     key_columns: Optional[List[str]] = field(default=None)
 
     def __post_init__(self):
-        self.lh_obj = LakehouseUtils(self.dest_lakehouse,self.spark)
+        self.lh_obj = Entity(self.table_name,self.dest_schema,self.dest_lakehouse,self.instance,self.table, self.spark, self.key_columns)
 
     def save(self) -> None:
         try:

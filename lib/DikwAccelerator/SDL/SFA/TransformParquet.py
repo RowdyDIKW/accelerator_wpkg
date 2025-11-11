@@ -77,6 +77,7 @@ class TransformParquetToDeltaTable:
     log_path : str
     schema_name : str
     dest_lh : str
+    instance: int
     spark : SparkSession
 
     def __post_init__(self):
@@ -121,6 +122,7 @@ class TransformParquetToDeltaTable:
                 table_name=self.table_name,
                 dest_schema=self.schema_name,
                 dest_lakehouse=self.dest_lh,
+                instance=self.instance
                 table=df,
                 spark=self.spark
             )

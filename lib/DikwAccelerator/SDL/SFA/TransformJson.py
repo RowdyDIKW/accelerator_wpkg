@@ -18,6 +18,7 @@ class TransformJsonToDeltaTable:
     log_path : str
     schema_name : str
     dest_lh : str
+    instance: int
     spark : SparkSession
 
     def __post_init__(self):
@@ -45,7 +46,7 @@ class TransformJsonToDeltaTable:
             data = {}
             data[self.table_name] = pdf
             data = pandas_to_spark_dfs(data,self.schema_name,self.spark)
-            table = Table(table_name=self.table_name, dest_schema=self.schema_name,dest_lakehouse=self.dest_lh,table= data[self.table_name],spark=self.spark)
+            table = Table(table_name=self.table_name, dest_schema=self.schema_name,dest_lakehouse=self.dest_lh, instance=self.instance, table= data[self.table_name],spark=self.spark)
             table.save()
             """         add code above          """
             logger.info(f"Transform Json files in {self.file_path} process finished")

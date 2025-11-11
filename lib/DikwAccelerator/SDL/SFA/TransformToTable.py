@@ -13,6 +13,7 @@ class TransformToTable:
     log_path: str
     schema_name: str
     dest_lh: str
+    instance: int
     spark: SparkSession
 
     def execute(self):
@@ -30,6 +31,7 @@ class TransformToTable:
                     log_path=self.log_path,
                     schema_name=self.schema_name,
                     dest_lh=self.dest_lh,
+                    instance=self.instance,
                     spark=self.spark
                 )
             elif file_type == 'parquet':
@@ -39,6 +41,7 @@ class TransformToTable:
                     log_path=self.log_path,
                     schema_name=self.schema_name,
                     dest_lh=self.dest_lh,
+                    instance=self.instance,
                     spark=self.spark
                 )
             else:
